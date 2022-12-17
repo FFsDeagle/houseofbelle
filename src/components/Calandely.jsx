@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 function Calandly() {
   const url = "https://calendly.com/houseofbelle";
   const minWidth = "320px";
-  const height = "580px";
+  const height = "880px";
 
   useEffect(() => {
     const head = document.querySelector("head");

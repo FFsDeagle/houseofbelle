@@ -29,7 +29,7 @@ function Footer() {
           {iconCopyRight} House of Belle 
         </div>
         <div className="footer-text">
-          ABN 00 000 000 000
+          ABN 27 427 137 900
         </div>
       </div>
     </div>

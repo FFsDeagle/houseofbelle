@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import '../App.css'
-import heroImg01 from '../images/hero-img-01.jpg'
-import heroImg02 from '../images/hero-img-02.jpg'
+import heroImg01 from '../images/IMG_1344.jpg'
+import heroImg02 from '../images/IMG_1351.jpg'
+import heroImg03 from '../images/IMG_1742.jpg'
+import heroImg04 from '../images/IMG_1851.jpg'
+import heroImg05 from '../images/IMG_2033.jpg'
+import heroImg06 from '../images/IMG_2345.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook, faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import  AOS  from 'aos'
@@ -15,14 +19,58 @@ function Home() {
   const iconInstagram = <FontAwesomeIcon size='2x' icon={faInstagram} />
   const iconTwitter = <FontAwesomeIcon size='2x' icon={faTwitter} /> 
 
+  const [selection, setSelection] = useState(false);
+
+  const [width, setWidth] = useState(window.innerWidth); // check width size of the window
+  const handleWindowSizeChange = () => {
+      setWidth(window.innerWidth);
+      if (window.innerWidth > 730){
+        if(!selection){
+          setSelection(!selection);
+          console.log(selection)
+        }
+      }if (window.innerWidth < 730 && selection === true){
+        setSelection(!selection);
+      }
+  };
+
+  useEffect(() => {
+    if (window.innerWidth > 730){
+      const timer = setTimeout(() => {
+        setSelection(!selection)
+      })
+    }
+  },[]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+        window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  })
+
   useEffect(() => {
     AOS.init(({duration: 500}))
   },[])
+
+  useEffect(() => {
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+  }, [])
+
+  const moveToTop = () => {
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
+  }
+
+  const openNewTab = url => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
 
   return (
     <div className='home-wrapper'>
       <div id="container" className="home">
         <div className="hero">
+            {selection ? <div className="icontitle">House of Belle</div> : null}
           <div className="hero-title">
             <div className="title-01">
               Bring your
@@ -35,16 +83,16 @@ function Home() {
             </div>
           </div>
           <div className="hero-btn-container">
-            <div className="hero-btn">
-              <Link className='link-packages' to='/booking'>
-                Let's Decorate!
-              </Link>
-            </div>
-            <div className="hero-btn">
-              <Link className='link-packages' to='/packages'>
-                Packages & Pricing
-              </Link>
-            </div>
+            <Link className='link-packages' to='/booking'>
+              <div className="hero-btn">
+                  Let's Decorate!
+              </div>
+            </Link>
+            <Link className='link-packages' to='/packages'>
+              <div className="hero-btn">
+                  Packages & Pricing
+              </div>
+            </Link>
           </div>
           <div className="hero-background">
             <div className="hero-background-container-01">
@@ -52,14 +100,14 @@ function Home() {
               <img src={heroImg02} alt="" className="hero-background-img-02" />
             </div>
             <div className="hero-background-container-02">
-              <img src={heroImg01} alt="" className="hero-background-img-03" />
-              <img src={heroImg02} alt="" className="hero-background-img-04" />
+              <img src={heroImg03} alt="" className="hero-background-img-03" />
+              <img src={heroImg04} alt="" className="hero-background-img-04" />
             </div>
           </div>
         </div>
         <div className="card-02">
           <div className="card-02-sub">
-
+          
           </div>
           <div className="card-info-01-text">
             <div className="card-item-01" data-aos="fade-up">
@@ -98,29 +146,32 @@ function Home() {
             </div>
             <div className="card-info-sub-desc">
                 <div className="card-icon">
-                  <Link className='link' to='/'>
+                  <Link className='link' onClick={() => openNewTab('https://www.facebook.com/profile.php?id=100087354747246')}>
                     {iconFacebook}
                   </Link>
                 </div>
                 <div className="card-icon">
-                  <Link className='link' to='/'>
+                  <Link className='link' onClick={() => openNewTab('https://www.instagram.com/houseofbelle_au/')}>
                     {iconInstagram}
                   </Link>
                 </div>
-                <div className="card-icon">
+                {/* <div className="card-icon">
                   <Link className='link' to='/'>
                     {iconTwitter}
                   </Link>
-                </div>
+                </div> */}
+              </div>
+              <div className="card-02-btn" onClick={() => moveToTop()}>
+                  Back to top
               </div>
           </div>
         </div>
-        <div className="card-03">
+        {/* <div className="card-03">
           <div className="card-03-container">
-              <img className='card-03-img' src={heroImg02} alt="" />
+              <img className='card-03-img' src={heroImg05} alt="" />
               <div className="card-03-info">
                 <div className="card-03-info-item-01">
-                  From intimate date nights to large gatherings, leave the party planning to us! We can accommodate celebrations between 2-30 guests*!
+                  From intimate date nights to large gatherings, leave the party planning to us! We can accommodate celebrations between 2-24 guests*!
                 </div>
                 <div className="card-03-info-item-02">
                   <div id="accordion">
@@ -128,17 +179,15 @@ function Home() {
                       <div class="card-header" id="headingOne">
                         <h5 class="mb-0">
                           <button id="btn-collapse-link" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                           <div className='package-title'>Pearl Package (2-8 guests)</div>
+                           <div className='package-title'>2 – 4 guests</div>
                           </button>
                         </h5>
                       </div>
                       <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
                         <div class="card-body">
                           <li>Ideal for small groups</li>
-                          <li>Two (2) hours of use</li>
-                          <li>Table for 2 guests: $250</li>
-                          <li>Additional Guests up to 8: $40 per guest</li>
-                          <li>10% Service Fee will be added</li>
+                          <li>Three (3) hours of use</li>
+                          <li>$250 inc. GST</li>
                         </div>
                       </div>
                     </div>
@@ -146,7 +195,7 @@ function Home() {
                       <div class="card-header" id="headingTwo">
                         <h5 class="mb-0">
                           <button id="btn-collapse-link" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            <div className='package-title'>Ruby Package (9-16 guests)</div>
+                            <div className='package-title'>6 – 12 guests</div>
                           </button>
                         </h5>
                       </div>
@@ -154,10 +203,7 @@ function Home() {
                         <div class="card-body">
                           <li>Ideal for midsize groups</li>
                           <li>Three (3) hours of use</li>
-                          <li>Table for 9-10 guests: $545</li>
-                          <li>Table for 11-12 guests: $645</li>
-                          <li>Table for 13-16 guests: $55/person</li>
-                          <li>12-15% Service Fee will be added</li>
+                          <li>$320 inc. GST </li>
                         </div>
                       </div>
                     </div>
@@ -165,18 +211,31 @@ function Home() {
                       <div class="card-header" id="headingThree">
                         <h5 class="mb-0">
                           <button id="btn-collapse-link" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            <div className='package-title'>Diamond Package (17-30 guests)</div>
+                            <div className='package-title'>13 – 18 guests</div>
                           </button>
                         </h5>
                       </div>
                       <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
                         <div class="card-body">
                           <li>Ideal for large groups</li>
-                          <li>Four (4) hours of use</li>
-                          <li>Table for 17-30 guests - $65/person</li>
-                          <li>For picnics larger than 30 guests, please submit a formal inquiry for a custom quote.</li>
-                          <li>*Requires 21 days’ minimum notice</li>
-                          <li>20% Service Fee will be added</li>
+                          <li>Three (3) hours of use</li>
+                          <li>$390 inc. GST</li>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card">
+                      <div class="card-header" id="headingFour">
+                        <h5 class="mb-0">
+                          <button id="btn-collapse-link" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                            <div className='package-title'>19 – 24 guests</div>
+                          </button>
+                        </h5>
+                      </div>
+                      <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                        <div class="card-body">
+                          <li>Ideal for large groups</li>
+                          <li>Three (3) hours of use</li>
+                          <li>$460 inc. GST</li>
                         </div>
                       </div>
                     </div>
@@ -189,7 +248,7 @@ function Home() {
                 </div>
               </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   )

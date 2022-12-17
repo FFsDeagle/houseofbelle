@@ -1,6 +1,6 @@
 import React, { useEffect} from 'react'
 import img01 from '../images/hero-img-02.jpg'
-import img02 from '../images/hero-img-03.jpg'
+import img02 from '../images/IMG_2345.jpg'
 
 function Packages() {
 

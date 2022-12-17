@@ -7,8 +7,14 @@ import Packages from './components/packages';
 import Booking from './components/booking';
 import Faq from './components/faqs'
 import Addons from './components/addons'
+import Booknow from './components/Booknow';
+import { useState } from 'react'
+import NewBooking from './components/NewBooking';
 
 function App() {
+
+  const [selection, setSelection] = useState(true);
+  const selectionData = { selection, setSelection };
 
   return (
     <div className="app-wrapper">
@@ -19,6 +25,8 @@ function App() {
         <Route path="/booking" element={<Booking />} />
         <Route path="/faqs" element={<Faq />} />
         <Route path="/addons" element={<Addons />} />
+        <Route path="/booknow" element={<Booknow />} />
+        <Route path="/newbooking" element={<NewBooking />} />
       </Routes>
       <Footer />
     </div>
