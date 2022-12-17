@@ -1,10 +1,54 @@
-import { useState } from 'react'
+import { useState, useReducer } from 'react'
 import Calandly from './Calandely'
 import { Link } from 'react-router-dom'
 import DatePicker from 'react-date-picker';
 import { useEffect } from 'react';
 
+const colorList = [
+  {id: 0, name: 'White, cream, ivory', selected: false},{id: 1, name: 'Neutral, light brown', selected: false},
+  {id: 2, name: 'Red, burgundy', selected: false},{id: 3, name: 'Muted pinks (mauve, dusty rose, blush pink)', selected: false},
+  {id: 4, name: 'Bright pinks (fuchsia, hot pink)', selected: false},{id: 5, name: 'Sage green, eucalyptus', selected: false},
+  {id: 6, name: 'Emerald green, dark green', selected: false},{id: 7, name: 'Purple, lavender, lilac', selected: false},
+  {id: 8, name: 'Dusty blue, light blue', selected: false},{id: 9, name: 'Dark blue, navy blue', selected: false},
+  {id: 10, name: 'Teal, turquoise, aqua', selected: false},{id: 11, name: 'Terracotta, burnt orange, pumpkin', selected: false},
+  {id: 12, name: 'Light orange, peach, coral', selected: false},{id: 13, name: 'Yellows (bright yellow, mustard yellow)', selected: false},
+  {id: 14, name: 'Gray, light gray', selected: false},{id: 15, name: 'Black, charcoal', selected: false},
+]
+
+const addonList = [
+  {id: 16, name: 'Extra 30 Minutes: $30', selected: false},{id: 17, name: 'Extra 60 Minutes: $60', selected: false},
+  {id: 18, name: 'Extra 90 Minutes: $90', selected: false},{id: 19, name: 'Bluetooth Speaker: $25', selected: false},
+  {id: 20, name: 'Extra White Boho Umberella: $30', selected: false},{id: 21, name: 'Instant Camera with 10 Films Polaroid: $25', selected: false},
+  {id: 22, name: '100 Premium fresh standing Roses: $325', selected: false}
+]
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "COMPLETE":
+      return state.map((item) => {
+        if (item.id === action.id) {
+          return { ...item, selected: !item.selected };
+        } else {
+          return item;
+        }
+      });
+      case "ADDONS":
+        return state.map((item) => {
+          if (item.id === action.id) {
+            return { ...item, selected: !item.selected };
+          } else {
+            return item;
+          }
+      });
+    default:
+      return state;
+  }
+};
+
 function Booking() {
+
+  const [colorCollection, dispatch] = useReducer(reducer, colorList);
+  const [addonCollection, dispatchAddon] = useReducer(reducer, addonList);
 
   const [packageType, setPackageType] = useState('');
   const [packageNo, setPackageNo] = useState(-1);
@@ -26,6 +70,8 @@ function Booking() {
   const [preferred05, setPreferred05] = useState('');
   const [prefCustom, setPrefCustom] = useState('');
   const [guestAmount, setGuestAmount] = useState('');
+  const [refer, setRefer] = useState('');
+  const [moreInfo, setMoreInfo] = useState('');
 
   const [data, setData] = useState({
     id: "-1",
@@ -61,6 +107,45 @@ function Booking() {
     setPrefCustom(e)
     setData({...data, id: "-1", selected: false})
     console.log(prefCustom)
+  }
+
+  const handleCheck = (item) => {
+    console.log(item.id)
+    dispatch({ type: "COMPLETE", id: item.id});
+  }
+
+  const handleAddonCheck = (item) => {
+    dispatchAddon({ type: "ADDONS", id: item.id});
+  }
+
+  const displayColorList = () => {
+      return(
+        <>
+          {colorCollection.map((item) => (
+            <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
+              <input className='booking-card-02-form-data-check' onChange={() => handleCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
+              {item.name}
+            </label>
+          ))}
+        </>
+      )
+  }
+
+  const displayAddons = () => {
+    return(
+      <>
+        {addonCollection.map((item) => (
+          <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
+            <input className='booking-card-02-form-data-check' onChange={() => handleAddonCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
+            {item.name}
+          </label>
+        ))}
+    </>
+    )
+  }
+
+  const checkInputs = () => {
+    
   }
 
   return (
@@ -182,7 +267,7 @@ function Booking() {
                       <input placeholder='10am - sunset' className='booking-card-02-form-data-input' type="text" value={time} onChange={e => setTime(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
-                      Preffered Setting *
+                      Preferred Setting *
                       <label className="booking-card-02-form-data-hover" for="item01">
                         <input className='booking-card-02-form-data-check' id='item01' onChange={e => setPreferred01(e.target.value)} value={preferred01} type="checkbox" />
                         Park
@@ -247,8 +332,29 @@ function Booking() {
                       </div>
                     </div>
                     <div className="booking-card-02-form-data-name">
+                      Which colors would you like incorporated in your picnic? (Choose up to 3)
+                      {displayColorList()}
+                    </div>
+                    <div className="booking-card-02-form-data-name">
                       Customized message for chalkboard sign *
                       <input value={chalkboard} onChange={e => setChalkBoard(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" />
+                    </div>
+                    <div className="booking-card-02-form-data-name">
+                      Interested in Add-Ons? (OPTIONAL)
+                      {displayAddons()}
+                    </div>
+                    <div className="booking-card-02-form-data-name">
+                      How did you hear about us?
+                      <input value={refer} onChange={e => setRefer(e.target.value)} placeholder='e.g. Google/Facebook/Instagram etc.' className='booking-card-02-form-data-input' type="text" />
+                    </div>
+                    <div className="booking-card-02-form-data-name">
+                      Tell us more about your gathering
+                      <textarea cols="4" rows="12" value={moreInfo} onChange={e => setMoreInfo(e.target.value)} placeholder='What do I need to know about the project?' className='booking-card-02-form-data-input-more-info' type="text" />
+                    </div>
+                    <div className="submit-button-container">
+                      <div className="submit-button" onClick={() => checkInputs()}>
+                        Submit
+                      </div>
                     </div>
                   </div>
                 </div>
