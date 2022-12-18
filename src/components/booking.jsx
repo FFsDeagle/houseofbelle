@@ -30,6 +30,11 @@ const foodList = [
   {id: 29, name: 'All 3 Desserts (charcuterie board, donut wall, and 3-tier dessert tower) $175.00', selected: false},
 ]
 
+const packageList = [
+  {id: 30, name: "2 – 4 guests - $250 inc. GST", selected: false},{id: 31, name: "6 – 12 guests - $320 inc. GST", selected: false},
+  {id: 32, name: "13 – 18 guests - $390 inc. GST", selected: false},{id: 33, name: "19 – 24 guests - $460 inc. GST", selected: false},
+]
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "COMPLETE":
@@ -49,6 +54,14 @@ const reducer = (state, action) => {
           }
       });
       case "FOOD":
+        return state.map((item) => {
+          if (item.id === action.id) {
+            return { ...item, selected: !item.selected };
+          } else {
+            return item;
+          }
+      });
+      case "PACKAGE":
         return state.map((item) => {
           if (item.id === action.id) {
             return { ...item, selected: !item.selected };
@@ -78,6 +91,7 @@ function Booking() {
   const [colorCollection, dispatch] = useReducer(reducer, colorList);
   const [addonCollection, dispatchAddon] = useReducer(reducer, addonList);
   const [foodCollection, dispatchFood] = useReducer(reducer, foodList);
+  const [packageCollection, dispatchPackage] = useReducer(reducer, packageList);
 
   const [packageType, setPackageType] = useState('');
   const [purpose, setPurpose] = useState('');
@@ -103,9 +117,9 @@ function Booking() {
 
   const packages = [
     {id: 0, name: "2 - 4 People $240 inc. GST"},
-    {id: 1, name: "4 - 8 People $240 inc. GST"},
-    {id: 2, name: "8 - 16 $240 inc. GST"},
-    {id: 3, name: "16 - 24 $240 inc. GST"}
+    {id: 1, name: "4 - 8 People $320 inc. GST"},
+    {id: 2, name: "8 - 16 People $390 inc. GST"},
+    {id: 3, name: "16 - 24 People $460 inc. GST"}
   ]
 
   let futureDate = new Date();
@@ -183,6 +197,19 @@ function Booking() {
     )
   }
 
+  const displayPackages = () => {
+    return(
+      <>
+        {packageCollection.map((item) => (
+          <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
+            <input name="package" value={item.name} className='booking-card-02-form-data-check' onChange={() => handleFood(item)} id={item.id} checked={item.selected} type="checkbox" />
+            {item.name}
+          </label>
+        ))}
+    </>
+    )
+  }
+
   const filterPreferredSetting = () => {
     let userInput = true;
     if(preferred01 != '' || preferred02 != '' || preferred03 != '' || preferred04 != '' || preferred05 != ''){
@@ -253,7 +280,7 @@ function Booking() {
                     Picnics
                   </div>
                   <div className="booking-card-01-item-02-info">
-                    We require a minimum of 14 days before bookings. You will need contact us directly for bookings withing less than a week. You will also be required to pay the fee in full upfront. For standard bookings we require a 50% non-refundable retainer fee to confirm your booking.  The remaining balance and a $100 security damage deposit (refundable) must be paid no later than 7 days prior to the event.
+                    We require a minimum of 14 days before bookings. You will need contact us directly for bookings within less than a week. You will also be required to pay the fee in full upfront. For standard bookings we require a 50% non-refundable retainer fee to confirm your booking.  The remaining balance and a $100 security damage deposit (refundable) must be paid no later than 7 days prior to the event.
                   </div>
                 </div>
                 <div className="booking-card-01-item-02">
@@ -402,7 +429,7 @@ function Booking() {
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Customized message for chalkboard sign *
-                      <input name="chalkboard" required value={chalkboard} onChange={e => setChalkBoard(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" />
+                      <input name="chalkboard" required value={chalkboard} onChange={e => setChalkBoard(e.target.value)} placeholder='Your message..' className='booking-card-02-form-data-input' type="text" />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Food & Drinks (OPTIONAL)

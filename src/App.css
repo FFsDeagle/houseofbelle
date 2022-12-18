@@ -2323,7 +2323,7 @@ label {
   }
 
   .booking-card-02-form-data{
-    width: 16rem;
+    width: 22rem;
     padding: .5rem
   }
 
@@ -2412,4 +2412,15 @@ label {
   li {
     font-size: 12px;
   }
+
+  @media only screen and (max-width: 340px) {
+    .booking-card-02-form-data{
+      width: 17rem;
+    }
+
+    .booking-card-02-form-data-input{
+      width: 15rem;
+      text-align: center;
+    }
+  } 
 }
