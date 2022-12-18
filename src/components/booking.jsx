@@ -1,8 +1,9 @@
-import { useState, useReducer } from 'react'
+import { useState, useReducer, useRef } from 'react'
 import Calandly from './Calandely'
 import { Link } from 'react-router-dom'
 import DatePicker from 'react-date-picker';
 import { useEffect } from 'react';
+import emailJs from '@emailjs/browser';
 
 const colorList = [
   {id: 0, name: 'White, cream, ivory', selected: false},{id: 1, name: 'Neutral, light brown', selected: false},
@@ -20,6 +21,13 @@ const addonList = [
   {id: 18, name: 'Extra 90 Minutes: $90', selected: false},{id: 19, name: 'Bluetooth Speaker: $25', selected: false},
   {id: 20, name: 'Extra White Boho Umberella: $30', selected: false},{id: 21, name: 'Instant Camera with 10 Films Polaroid: $25', selected: false},
   {id: 22, name: '100 Premium fresh standing Roses: $325', selected: false}
+]
+
+const foodList = [
+  {id: 23, name: '6 Donuts on  Wall $30', selected: false},{id: 24, name: 'Savoury box (beef pepper pies, chicken mushroom pies, sausage rolls) $80', selected: false},
+  {id: 25, name: 'Fruit Platter $65.00', selected: false},{id: 26, name: 'Charcuterie Board (assorted meats, cheese, and crackers) $65.00', selected: false},
+  {id: 27, name: 'A bottle of non-alcoholic beverage $25.00', selected: false},{id: 28, name: '3-Tier Dessert Tower $65.00', selected: false},
+  {id: 29, name: 'All 3 Desserts (charcuterie board, donut wall, and 3-tier dessert tower) $175.00', selected: false},
 ]
 
 const reducer = (state, action) => {
@@ -40,6 +48,14 @@ const reducer = (state, action) => {
             return item;
           }
       });
+      case "FOOD":
+        return state.map((item) => {
+          if (item.id === action.id) {
+            return { ...item, selected: !item.selected };
+          } else {
+            return item;
+          }
+      });
     default:
       return state;
   }
@@ -47,21 +63,29 @@ const reducer = (state, action) => {
 
 function Booking() {
 
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+    emailJs.sendForm('service_ub3rlti', 'template_wt2bj8s', form.current, 'jDG8buwzetS63VM21')
+      .then((result) => {
+          console.log(result.text);
+      }, (error) => {
+          console.log(error.text);
+      });
+  };
+
   const [colorCollection, dispatch] = useReducer(reducer, colorList);
   const [addonCollection, dispatchAddon] = useReducer(reducer, addonList);
+  const [foodCollection, dispatchFood] = useReducer(reducer, foodList);
 
   const [packageType, setPackageType] = useState('');
-  const [packageNo, setPackageNo] = useState(-1);
-  const [event, setEvent] = useState('');
   const [purpose, setPurpose] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [location, setLocation] = useState('');
   const [time, setTime] = useState('');
   const [date, setDate] = useState(new Date())
-  const [final, setFinal] = useState(false);
-  const [custom, setCustom] = useState('');
   const [chalkboard, setChalkBoard] = useState('');
   const [preferred01, setPreferred01] = useState('');
   const [preferred02, setPreferred02] = useState('');
@@ -69,7 +93,6 @@ function Booking() {
   const [preferred04, setPreferred04] = useState('');
   const [preferred05, setPreferred05] = useState('');
   const [prefCustom, setPrefCustom] = useState('');
-  const [guestAmount, setGuestAmount] = useState('');
   const [refer, setRefer] = useState('');
   const [moreInfo, setMoreInfo] = useState('');
 
@@ -91,7 +114,6 @@ function Booking() {
   const checkPackage = (check) => {
     setPackages(check)
     setPackageType(packages[check].name)
-    console.log(packageType)
   }
 
   const setPackages = (check) => {
@@ -104,9 +126,9 @@ function Booking() {
   }
 
   const disableCheck = (e) => {
+    setPackageType('')
     setPrefCustom(e)
     setData({...data, id: "-1", selected: false})
-    console.log(prefCustom)
   }
 
   const handleCheck = (item) => {
@@ -118,12 +140,16 @@ function Booking() {
     dispatchAddon({ type: "ADDONS", id: item.id});
   }
 
+  const handleFood = (item) => {
+    dispatchFood({ type: "FOOD", id: item.id});
+  }
+
   const displayColorList = () => {
       return(
         <>
           {colorCollection.map((item) => (
             <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
-              <input className='booking-card-02-form-data-check' onChange={() => handleCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
+              <input name="colors" value={item.name} className='booking-card-02-form-data-check' onChange={() => handleCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
               {item.name}
             </label>
           ))}
@@ -136,7 +162,7 @@ function Booking() {
       <>
         {addonCollection.map((item) => (
           <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
-            <input className='booking-card-02-form-data-check' onChange={() => handleAddonCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
+            <input name="addons" value={item.name} className='booking-card-02-form-data-check' onChange={() => handleAddonCheck(item)} id={item.id} checked={item.selected} type="checkbox" />
             {item.name}
           </label>
         ))}
@@ -144,8 +170,45 @@ function Booking() {
     )
   }
 
-  const checkInputs = () => {
-    
+  const displayFood = () => {
+    return(
+      <>
+        {foodCollection.map((item) => (
+          <label key={item.id} className="booking-card-02-form-data-hover" for={item.id}>
+            <input name="food" value={item.name} className='booking-card-02-form-data-check' onChange={() => handleFood(item)} id={item.id} checked={item.selected} type="checkbox" />
+            {item.name}
+          </label>
+        ))}
+    </>
+    )
+  }
+
+  const filterPreferredSetting = () => {
+    let userInput = true;
+    if(preferred01 != '' || preferred02 != '' || preferred03 != '' || preferred04 != '' || preferred05 != ''){
+      userInput = false
+    }
+    return userInput
+  }
+
+  const filterColors = () => {
+    let userInput = true;
+  }
+
+  const filterPackages = () => {
+    let userInput = true;
+    if(packageType != '' || prefCustom != ''){
+      userInput = false;
+    }
+    return userInput;
+  }
+
+  const getname = () => {
+    let name = ""
+    if(preferred01 != '' || preferred02 != '' || preferred03 != '' || preferred04 != '' || preferred05 != ''){
+      name = "pref"
+    }
+    return name
   }
 
   return (
@@ -177,7 +240,7 @@ function Booking() {
                     Location Restrictions
                   </div>
                   <div className="booking-card-01-item-02-info">
-                    All picnic set-up must be within 40 yards of vehicle access. We operate within 25 miles of zip code 91316 [Encino, CA]. Additional travel fee of $1.50/mile roundtrip will apply for locations after the 25-mile radius.
+                    All picnic set-up must be within 40 meteres of vehicle access. We operate within 25 kms of post code 6107 [Beckenham, WA]. Additional travel fee of $1.50/km roundtrip will apply for locations after the 25-km radius.
                   </div>
                 </div>
               </div>
@@ -190,7 +253,7 @@ function Booking() {
                     Picnics
                   </div>
                   <div className="booking-card-01-item-02-info">
-                    We require a minimum of 14 days’ notice for small group picnics 2-16 guests’ bookings between 2-16 guests and 21 days’ notice for 17 or more. Any booking with less than a week’s notice must be paid in full upfront. We require a 50% non-refundable retainer fee to confirm your booking.  The remaining balance and a $100 security damage deposit (refundable) must be paid no later than 7 days prior to the event.
+                    We require a minimum of 14 days before bookings. You will need contact us directly for bookings withing less than a week. You will also be required to pay the fee in full upfront. For standard bookings we require a 50% non-refundable retainer fee to confirm your booking.  The remaining balance and a $100 security damage deposit (refundable) must be paid no later than 7 days prior to the event.
                   </div>
                 </div>
                 <div className="booking-card-01-item-02">
@@ -198,7 +261,8 @@ function Booking() {
                     Marriage Proposals
                   </div>
                   <div className="booking-card-01-item-02-info">
-                    We require a minimum of 30 days’ notice so that we can work with you to create the perfect proposal, customised just for your loved one. We’ll make sure you have an unforgettable proposal. Any less than 14 days that you can always contact us we might be able to help you!
+                    {/* We require a minimum of 30 days’ notice so that we can work with you to create the perfect proposal, customised just for your loved one. We’ll make sure you have an unforgettable proposal. Any less than 14 days that you can always contact us we might be able to help you! */}
+                    Coming Soon..
                   </div>
                 </div>
                 <div className="booking-card-01-item-02">
@@ -206,7 +270,8 @@ function Booking() {
                     Décor Hire
                   </div>
                   <div className="booking-card-01-item-02-info">
-                    We require 3 months in prior for booking, 25% refundable bond fees from the total hire, if less than 30 days, feel free to contact us as we might be available on your date.
+                    {/* We require 3 months in prior for booking, 25% refundable bond fees from the total hire, if less than 30 days, feel free to contact us as we might be available on your date. */}
+                    Coming Soon..
                   </div>
                 </div>
               </div>
@@ -216,17 +281,17 @@ function Booking() {
               <div className="booking-card-01-container">
                 <div className="booking-card-01-item-02">
                   <div className="booking-card-01-item-03-info">
-                    <li className='booking-card-01-item-03-desc'>All picnics set-ups must be within 40 yards of vehicle access</li>
+                    <li className='booking-card-01-item-03-desc'>All picnics set-ups must be within 40 meters of vehicle access</li>
                     <li className='booking-card-01-item-03-desc'>We operate within 25 kms of zip code 6107</li>
                     <li className='booking-card-01-item-03-desc'>Full setup & pack down bookings that are in locations that are not easily accessible for setting up will incur a $50 set up fee, e.g., stairs, steep hill, no parking or set down bays close to event or picnic location</li>
-                    <li className='booking-card-01-item-03-desc'>Additional travel fee of $2/mile roundtrip will apply for locations after the 25-mile radius</li>
+                    <li className='booking-card-01-item-03-desc'>Additional travel fee of $1.50/km roundtrip will apply for locations after the 25km radius</li>
                     <li className='booking-card-01-item-03-desc'>Picnics set up & pack down bookings at beach or bush locations will incur a cleaning fee of $50 per set up</li>
                     <li className='booking-card-01-item-03-desc'>Please note that various councils have different rules and regulations, please make yourself familiar with these rules and regulations prior to making a booking.  Also note that some park authorities charge booking fees.  These fees will be additional to the above charges</li>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="booking-card-02">
+            <form className="booking-card-02" ref={form} onSubmit={sendEmail}>
               <div className="booking-card-02-title">
                 PRICES AND PACKAGES 
               </div>
@@ -244,71 +309,71 @@ function Booking() {
                   <div className="booking-card-02-form-data">
                     <div className="booking-card-02-form-data-name">
                       Name *
-                      <input placeholder='Your Name' className='booking-card-02-form-data-input' type="text" value={name} onChange={e => setName(e.target.value)} />
+                      <input name="name" required placeholder='Your Name' className='booking-card-02-form-data-input' type="text" value={name} onChange={e => setName(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Email *
-                      <input placeholder='example@mail.com' className='booking-card-02-form-data-input' type="text" value={email} onChange={e => setEmail(e.target.value)} />
+                      <input name="email" required placeholder='example@mail.com' className='booking-card-02-form-data-input' type="text" value={email} onChange={e => setEmail(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Phone Number *
-                      <input placeholder='04XX XXX XXX' className='booking-card-02-form-data-input' type="text" value={phone} onChange={e => setPhone(e.target.value)} />
+                      <input name="phone" required placeholder='04XX XXX XXX' className='booking-card-02-form-data-input' type="text" value={phone} onChange={e => setPhone(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       What will you be celebrating? *
-                      <input placeholder='Birthday/Picnic etc.' className='booking-card-02-form-data-input' type="text" value={purpose} onChange={e => setPurpose(e.target.value)} />
+                      <input name="celebrating" required placeholder='Birthday/Picnic etc.' className='booking-card-02-form-data-input' type="text" value={purpose} onChange={e => setPurpose(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Event Date *
-                      <DatePicker className='booking-card-02-form-data-input' format="dd MMMM, yyyy" minDate={new Date(futureDate)} onChange={(date) => setDate(date)} value={date} />     
+                      <DatePicker name="date" required className='booking-card-02-form-data-input' format="dd MMMM, yyyy" minDate={new Date(futureDate)} onChange={(date) => setDate(date)} value={date} />     
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Event Start Time *
-                      <input placeholder='10am - sunset' className='booking-card-02-form-data-input' type="text" value={time} onChange={e => setTime(e.target.value)} />
+                      <input name="time" required placeholder='10am - sunset' className='booking-card-02-form-data-input' type="text" value={time} onChange={e => setTime(e.target.value)} />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Preferred Setting *
                       <label className="booking-card-02-form-data-hover" for="item01">
-                        <input className='booking-card-02-form-data-check' id='item01' onChange={e => setPreferred01(e.target.value)} value={preferred01} type="checkbox" />
+                        <input required={filterPreferredSetting()} name={String(getname())} className='booking-card-02-form-data-check' id='item01' onChange={() => setPreferred01("Park")} value={preferred01} type="checkbox" />
                         Park
                       </label>
                       <label className="booking-card-02-form-data-hover" for="item02">
-                        <input className='booking-card-02-form-data-check' id='item02' onChange={e => setPreferred02(e.target.value)} value={preferred02} type="checkbox" />
+                        <input required={filterPreferredSetting()} name={String(getname())} className='booking-card-02-form-data-check' id='item02' onChange={() => setPreferred02("Beach")} value={preferred02} type="checkbox" />
                         Beach
                       </label>
                       <label className="booking-card-02-form-data-hover" for="item03">
-                        <input className='booking-card-02-form-data-check' id='item03' onChange={e => setPreferred03(e.target.value)} value={preferred03} type="checkbox" />
+                        <input required={filterPreferredSetting()} name={String(getname())} className='booking-card-02-form-data-check' id='item03' onChange={() => setPreferred03("Private Home/backyard/patio")} value={preferred03} type="checkbox" />
                         Private home/backyard/patio
                       </label>
                       <label className="booking-card-02-form-data-hover" for="item04">
-                        <input className='booking-card-02-form-data-check' id='item04' onChange={e => setPreferred04(e.target.value)} value={preferred04} type="checkbox" />
+                        <input required={filterPreferredSetting()} name={String(getname())} className='booking-card-02-form-data-check' id='item04' onChange={() => setPreferred04("Private venue")} value={preferred04} type="checkbox" />
                         Private venue
                       </label>
                       <label className="booking-card-02-form-data-hover" for="item05">
-                        <input className='booking-card-02-form-data-check' id='item05' onChange={e => setPreferred05(e.target.value)} value={preferred05} type="checkbox" />
+                        <input required={filterPreferredSetting()} name={String(getname())} className='booking-card-02-form-data-check' id='item05' onChange={() => setPreferred05("Other")} value={preferred05} type="checkbox" />
                         Other
                       </label>
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Package Type *
                       <label className="booking-card-02-form-data-hover" for="item06">
-                        <input checked={data.id === String(0)} key={0} className='booking-card-02-form-data-check' id='item06' onChange={() => checkPackage("0")} value={preferred01} type="checkbox" />
+                        <input required={filterPackages()} checked={data.id === String(0)} key={0} className='booking-card-02-form-data-check' id='item06' onChange={() => checkPackage("0")} value={packageType} name="package" type="radio" />
                         {packages[0].name}
                       </label>
                       <label key={1} className="booking-card-02-form-data-hover" for="item07">
-                        <input checked={data.id === String(1)} key={1} className='booking-card-02-form-data-check' id='item07' onChange={() => checkPackage("1")} value={preferred02} type="checkbox" />
+                        <input required={filterPackages()} checked={data.id === String(1)} key={1} className='booking-card-02-form-data-check' id='item07' onChange={() => checkPackage("1")} value={packageType} name="package" type="radio" />
                         {packages[1].name}
                       </label>
                       <label key={2} className="booking-card-02-form-data-hover" for="item08">
-                        <input checked={data.id === String(2)} key={2} className='booking-card-02-form-data-check' id='item08' onChange={() => checkPackage("2")} value={preferred03} type="checkbox" />
+                        <input required={filterPackages()} checked={data.id === String(2)} key={2} className='booking-card-02-form-data-check' id='item08' onChange={() => checkPackage("2")} value={packageType} name="package" type="radio" />
                         {packages[2].name}
                       </label>
                       <label key={3} className="booking-card-02-form-data-hover" for="item09">
-                        <input checked={data.id === String(3)} key={3} className='booking-card-02-form-data-check' id='item09' onChange={() => checkPackage("3")} value={preferred04} type="checkbox" />
+                        <input required={filterPackages()} checked={data.id === String(3)} key={3} className='booking-card-02-form-data-check' id='item09' onChange={() => checkPackage("3")} value={packageType} name="package" type="radio" />
                         {packages[3].name}
                       </label>
                         Custom package requests
-                        <input value={prefCustom} onChange={e => disableCheck(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" />
+                        <input required={filterPackages()} value={prefCustom} onChange={e => disableCheck(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" name="package" />
                         <div className="booking-card-02-form-data-desc">
                           <div className="booking-card-02-form-data-name">
                             Note
@@ -325,7 +390,7 @@ function Booking() {
                         </div>
                         <li className='booking-list-item'>3 hours of use </li> 
                         <div className="booking-card-02-form-data-name">
-                          Our packages are priced based on guest count, which include :
+                          Our packages are priced based on guest count, which include:
                         </div>
                         <li className='booking-list-item'>Enter “Romantic / I Do” for romantic picnics or Proposal Package</li> 
                         <li className='booking-list-item'>We will be sending you a form to fill up and we need a little bit details so that we can work together to create a perfect romantic picnic / proposal set up!</li>
@@ -337,7 +402,11 @@ function Booking() {
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Customized message for chalkboard sign *
-                      <input value={chalkboard} onChange={e => setChalkBoard(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" />
+                      <input name="chalkboard" required value={chalkboard} onChange={e => setChalkBoard(e.target.value)} placeholder='e.g. Large Group Reservation' className='booking-card-02-form-data-input' type="text" />
+                    </div>
+                    <div className="booking-card-02-form-data-name">
+                      Food & Drinks (OPTIONAL)
+                      {displayFood()}
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Interested in Add-Ons? (OPTIONAL)
@@ -345,21 +414,21 @@ function Booking() {
                     </div>
                     <div className="booking-card-02-form-data-name">
                       How did you hear about us?
-                      <input value={refer} onChange={e => setRefer(e.target.value)} placeholder='e.g. Google/Facebook/Instagram etc.' className='booking-card-02-form-data-input' type="text" />
+                      <input name="hear" value={refer} onChange={e => setRefer(e.target.value)} placeholder='e.g. Google/Facebook/Instagram etc.' className='booking-card-02-form-data-input' type="text" />
                     </div>
                     <div className="booking-card-02-form-data-name">
                       Tell us more about your gathering
-                      <textarea cols="4" rows="12" value={moreInfo} onChange={e => setMoreInfo(e.target.value)} placeholder='What do I need to know about the project?' className='booking-card-02-form-data-input-more-info' type="text" />
+                      <textarea name="more" cols="5" rows="12" value={moreInfo} onChange={e => setMoreInfo(e.target.value)} placeholder='What do I need to know about the project?' className='booking-card-02-form-data-input-more-info' type="text" />
                     </div>
                     <div className="submit-button-container">
-                      <div className="submit-button" onClick={() => checkInputs()}>
+                      <button type='submit' className="submit-button">
                         Submit
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
         </div>
     </div>
   )

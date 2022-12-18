@@ -25,8 +25,8 @@ function App() {
         <Route path="/booking" element={<Booking />} />
         <Route path="/faqs" element={<Faq />} />
         <Route path="/addons" element={<Addons />} />
-        <Route path="/booknow" element={<Booknow />} />
-        <Route path="/newbooking" element={<NewBooking />} />
+        {/* <Route path="/booknow" element={<Booknow />} /> */}
+        {/* <Route path="/newbooking" element={<NewBooking />} /> */}
       </Routes>
       <Footer />
     </div>
