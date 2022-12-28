@@ -1487,7 +1487,7 @@ input{
 }
 
 .booking-card-02-form-data {
-  width: 30rem;
+  width: 50rem;
   padding: 1rem;
   border-radius: 15px;
   text-align: start;
@@ -2008,6 +2008,12 @@ label {
   }
 }
 
+@media only screen and (max-width: 850px) {
+  .booking-card-02-form-data{
+    width: 30rem;
+  }
+}
+
 @media only screen and (max-width: 730px) {
   .booking-card-01-item-02-info {
     font-size: 16px;
@@ -2238,6 +2244,12 @@ label {
     max-width: 230px;
     display: inline-block;
     vertical-align: middle;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .booking-card-02-form-data{
+    width: 25rem;
   }
 }
 

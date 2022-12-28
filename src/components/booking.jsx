@@ -419,8 +419,20 @@ function Booking() {
                         <div className="booking-card-02-form-data-name">
                           Our packages are priced based on guest count, which include:
                         </div>
-                        <li className='booking-list-item'>Enter “Romantic / I Do” for romantic picnics or Proposal Package</li> 
-                        <li className='booking-list-item'>We will be sending you a form to fill up and we need a little bit details so that we can work together to create a perfect romantic picnic / proposal set up!</li>
+                        <li className='booking-list-item'>Curated House of Belle styling</li>
+                        <li className='booking-list-item'>Client’s color preferences</li> 
+                        <li className='booking-list-item'>Delivery, set up, pick up, and clean up</li> 
+                        <li className='booking-list-item'>Styled picnic setting with blankets</li> 
+                        <li className='booking-list-item'>Assortments of stylish throw pillows for each guest</li> 
+                        <li className='booking-list-item'>Custom - made low picnic table(s)</li> 
+                        <li className='booking-list-item'>Ceramic dinner plates </li> 
+                        <li className='booking-list-item'>Set of gold-brass flateware for each guest : Cutleries</li> 
+                        <li className='booking-list-item'>Glass goblets</li> 
+                        <li className='booking-list-item'>Cloth napkins </li> 
+                        <li className='booking-list-item'>Tabletop candles</li> 
+                        <li className='booking-list-item'>Customized message on board hand sanitizers</li> 
+                        <li className='booking-list-item'>Food and drinks are NOT INCLUDED, but we’re more than happy to cater from registered catering with extra cost</li> 
+                        <li className='booking-list-item'>OPTIONAL : Disposable dining set ,artificial flowers arrangement ( disposable cutleries, plates, plastic goblets )</li> 
                       </div>
                     </div>
                     <div className="booking-card-02-form-data-name">
