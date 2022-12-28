@@ -4,6 +4,7 @@ import img02 from '../images/IMG_2345.jpg'
 
 function Packages() {
 
+document.title = 'House of Belle - Packages';
   useEffect(() => {
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }, [])

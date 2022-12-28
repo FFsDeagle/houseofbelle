@@ -12,7 +12,7 @@ import { useState } from 'react'
 import NewBooking from './components/NewBooking';
 
 function App() {
-
+  document.title = 'House of Belle';
   const [selection, setSelection] = useState(true);
   const selectionData = { selection, setSelection };
 

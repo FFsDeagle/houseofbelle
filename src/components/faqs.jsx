@@ -60,6 +60,8 @@ const reducer = (state, action) => {
 
 function Faqs() {
   
+  document.title = 'House of Belle - FAQs';
+  
   useEffect(() => {
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }, [])

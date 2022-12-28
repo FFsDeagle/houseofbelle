@@ -76,6 +76,7 @@ const reducer = (state, action) => {
 
 function Booking() {
 
+  document.title = 'House of Belle - Booking';
   const form = useRef();
 
   const sendEmail = (e) => {

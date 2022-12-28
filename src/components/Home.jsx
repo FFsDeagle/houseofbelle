@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom'
 
 
 function Home() {
-
+  document.title = 'House of Belle - Home';
   const iconFacebook = <FontAwesomeIcon size='2x' icon={faFacebook} /> 
   const iconInstagram = <FontAwesomeIcon size='2x' icon={faInstagram} />
   const iconTwitter = <FontAwesomeIcon size='2x' icon={faTwitter} /> 
